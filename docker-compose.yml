@@ -1,0 +1,38 @@
+version: '3.3'
+
+services:
+  db:
+    image: mariadb
+    environment:
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD : 'password'
+      MYSQL_DATABASE: 'invisible-db'
+    ports:
+      - "3307:3306"
+    volumes:
+      - db-persistance:/var/lib/mysql
+
+  db_admin:
+    image: adminer:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  app:
+    build: .
+    environment:
+      - PYTHON_ENVIRONMENT=local
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./src:/code
+      - ./poetry/poetry.lock:/poetry.lock
+      - ./poetry/pyproject.toml:/pyproject.toml
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  db-persistance:
