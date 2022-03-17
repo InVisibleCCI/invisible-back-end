@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD : 'password'
       MYSQL_DATABASE: 'invisible-db'
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - db-persistance:/var/lib/mysql
 
@@ -25,6 +25,7 @@ services:
     environment:
       - PYTHON_ENVIRONMENT=local
     command: python manage.py runserver 0.0.0.0:8000
+    entrypoint: /start.sh
     volumes:
       - ./src:/code
       - ./poetry/poetry.lock:/poetry.lock

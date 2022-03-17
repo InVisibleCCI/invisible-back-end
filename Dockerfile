@@ -15,12 +15,12 @@ RUN         pip install --upgrade pip \
             && poetry install --no-interaction
 
 
-#ADD         ./start.sh          /start.sh
-#RUN         chmod +x            /start.sh
+ADD         ./start.sh          /start.sh
+RUN         chmod +x            /start.sh
 
 WORKDIR     /code
 ADD         ./src .
 
 EXPOSE      8000
 
-#CMD         gunicorn sferenobackend.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 300
+#CMD         gunicorn invisible_backend.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 300
