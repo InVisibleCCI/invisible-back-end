@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'django_crontab',
 
     'common',
     "core",
@@ -113,6 +114,13 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+# cronjob
+CRONJOBS = [
+    ('* * * * *', 'event.services.algolia_service.save_events_to_algolia', '>> /var/log/cron_job_images.log')
+
+    # ('0 0 * * *', 'event.services.algolia_service.save_events_to_algolia')
 ]
 
 
