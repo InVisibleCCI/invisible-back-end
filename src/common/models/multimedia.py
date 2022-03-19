@@ -1,5 +1,6 @@
-from common.models.entity import Entity
 from django.db import models
+
+from common.models.entity import Entity
 
 
 class Multimedia(Entity):
@@ -8,6 +9,9 @@ class Multimedia(Entity):
 
     class Meta:
         abstract = True
+
+    def __str__(self):
+        return self.alt_text
 
 
 class Image(Multimedia):
@@ -18,3 +22,8 @@ class Image(Multimedia):
         AVATAR = 4, "avatar de l'utilisateur"
 
     type = models.IntegerField(choices=ImageTypeChoices.choices)
+    order = models.IntegerField(default=0, null=True, blank=True)
+
+    class Meta:
+        app_label = "common"
+        verbose_name = 'Image'

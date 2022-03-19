@@ -22,6 +22,7 @@ PyMySQL = "^1.0.2"
 mysqlclient = "^2.1.0"
 djangorestframework-simplejwt = "^5.0.0"
 gunicorn = "^20.1.0"
+algoliasearch = "^2.6.1"
 
 [tool.poetry.dev-dependencies]
 pip = "^20.2.3"

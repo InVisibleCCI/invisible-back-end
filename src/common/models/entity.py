@@ -9,7 +9,7 @@ class Entity(models.Model):
         blank=True,
         auto_now=True
     )
-    deleted_at = models.DateTimeField(null=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         abstract = True

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import environ
 import os
+from algoliasearch.search_client import SearchClient
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -43,9 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
 
-    "core",
     'common',
-    'event'
+    "core",
+    'event',
+    'merchant'
 ]
 AUTH_USER_MODEL = 'core.User'
 
@@ -135,3 +137,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+ALGOLIA_CLIENT = SearchClient.create(env.str('ALGOLIA_APPLICATION_ID'), env.str('ALGOLIA_API_KEY'))
+ALGOLIA_INDEX = ALGOLIA_CLIENT.init_index(env.str('ALGOLIA_INDEX'))
