@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from common.admin import get_list_fields_names
+from merchant.models import Merchant
+
+
+@admin.register(Merchant)
+class MerchantAdmin(admin.ModelAdmin):
+    list_display = get_list_fields_names(Merchant)
