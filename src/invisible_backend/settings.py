@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import environ
 import os
+from algoliasearch.search_client import SearchClient
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,7 +42,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
+    'django_crontab',
+
+    'common',
+    "core",
+    'event',
+    'merchant'
 ]
+AUTH_USER_MODEL = 'core.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -107,6 +116,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CRONTAB_COMMAND_PREFIX = '. $HOME/.bash_profile &&'
+CRONTAB_COMMAND_SUFFIX = '2>&1'
+
+# cronjob
+CRONJOBS = [
+    ('0 0,12 * * *', 'event.services.algolia_service.save_events_to_algolia', '>> /tmp/scheduled_job.log 2>&1')
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
@@ -129,3 +146,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+ALGOLIA_CLIENT = SearchClient.create(env.str('ALGOLIA_APPLICATION_ID'), env.str('ALGOLIA_API_KEY'))
+ALGOLIA_INDEX = ALGOLIA_CLIENT.init_index(env.str('ALGOLIA_INDEX'))
