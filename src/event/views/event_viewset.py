@@ -1,10 +1,10 @@
-from rest_framework import viewsets
+from rest_framework import mixins, viewsets
 
 from event.models import Event
 from event.serializers.events import ListEventSerializer, RetrieveEventSerializer
 
 
-class EventViewSet(viewsets.ModelViewSet):
+class EventViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Event.objects.all()
 
     def get_serializer_class(self):
