@@ -4,6 +4,7 @@ from common.serializers.entity import EntitySerializer
 from common.serializers.multimedia import ImageSerializer
 from event.models import Event
 from event.serializers.category import CategorySerializer, AccessibilityCategorySerializer
+from merchant.serializers.merchant import MerchantEventSerializer
 
 
 class ListEventSerializer(EntitySerializer):
@@ -29,4 +30,19 @@ class ListEventSerializer(EntitySerializer):
             'categories',
             'accessibility_categories',
             'images'
+        )
+
+class RetrieveEventSerializer(ListEventSerializer):
+    merchant = MerchantEventSerializer()
+
+    @classmethod
+    def setup_for_serialization(cls, queryset):
+        return ListEventSerializer.setup_for_serialization(queryset).prefetch_related(
+            'merchant', 'merchant__address'
+        )
+
+    class Meta:
+        model = Event
+        fields = ListEventSerializer.Meta.fields + (
+            'merchant',
         )

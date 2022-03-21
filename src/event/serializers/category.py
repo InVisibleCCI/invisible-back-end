@@ -8,11 +8,17 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = "__all__"
+        fields =  (
+            'id',
+            'name'
+        )
 
 class AccessibilityCategorySerializer(serializers.ModelSerializer):
     name = serializers.CharField()
 
     class Meta:
         model = Category
-        fields = "__all__"
+        fields = (
+            'id',
+            'name'
+        )
