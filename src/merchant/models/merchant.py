@@ -12,6 +12,7 @@ class Merchant(Entity):
     instagram_url = models.URLField(verbose_name="Lien vers la page instagram", null=True, blank=True)
     twitter_url = models.URLField(verbose_name="Lien vers la page twitter", null=True, blank=True)
     email = models.EmailField(verbose_name="Adresse Email du marchant", null=True, blank=True)
+    description = models.TextField(verbose_name="Description du commerçant", null=True, blank=True)
 
     class Meta:
         app_label = "merchant"
