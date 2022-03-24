@@ -14,6 +14,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     # avatar = models.ForeignKey('Image', null=True)
     is_staff = models.BooleanField(default=False)
+    is_merchant = models.BooleanField(default=False)
 
     objects = UserManager()
 

@@ -32,6 +32,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+GEOCODE_APP_NAME = 'propulseApi'
 
 # Application definition
 
@@ -44,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'django_crontab',
+
+    'django.contrib.gis',
 
     'common',
     "core",
