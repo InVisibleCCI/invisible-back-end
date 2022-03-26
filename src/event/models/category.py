@@ -8,6 +8,8 @@ class Category(CommonCategory):
         verbose_name = "Categorie de l'expérience"
 
 
+
+
 class AccessibilityCategory(CommonCategory):
 
     class Meta:

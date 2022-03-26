@@ -1,11 +1,10 @@
+import geopy.exc
 from django.db import models
 
+from common.geopy.geocoding import GeoCoding
 from common.geopy.geopy_custom_exception import LocationNotFound
 from common.models import Entity
 from core.models import User
-import geopy.exc
-
-from common.geopy.geocoding import GeoCoding
 
 
 class Address(Entity):
@@ -27,7 +26,7 @@ class Address(Entity):
     def set_location_on_save(self):
         geo_coding = GeoCoding()
         address = dict(
-            street = self.line1,
+            street=self.line1,
             city=self.city,
             postalcode=self.zipcode
         )
@@ -50,12 +49,12 @@ class Address(Entity):
         except geopy.exc.GeocoderTimedOut as e:
             pass
 
+    def save(self, *args, **kwargs):
+        if self.user.is_merchant:
+            try:
+                self.set_location_on_save()
+                super(Address, self).save(*args, **kwargs)
+            except Exception as e:
+                pass
 
-
-    def save(self,*args, **kwargs):
-        try :
-            self.set_location_on_save()
-            super(Address, self).save(*args, **kwargs)
-        except Exception as e:
-            pass
-
+        super(Address, self).save(*args,**kwargs)

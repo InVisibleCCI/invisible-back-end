@@ -1,6 +1,7 @@
 from django.db import models
 
 from common.models.entity import Entity
+from core.models import User
 
 
 class Multimedia(Entity):
