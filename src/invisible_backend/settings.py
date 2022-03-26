@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+from datetime import timedelta
 from pathlib import Path
 import environ
 import os
@@ -153,3 +154,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ALGOLIA_CLIENT = SearchClient.create(env.str('ALGOLIA_APPLICATION_ID'), env.str('ALGOLIA_API_KEY'))
 ALGOLIA_INDEX = ALGOLIA_CLIENT.init_index(env.str('ALGOLIA_INDEX'))
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
+}
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30)
+}
