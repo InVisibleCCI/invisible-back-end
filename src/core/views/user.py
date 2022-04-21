@@ -4,6 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from common.mails import send_registration_mail
 from core.models import User
 from core.serializers.user import UserCreateSerializer, EditUserSerializer, UserRetrieveSerializer
 
@@ -29,6 +30,7 @@ class UserViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.Gen
         serialized_user = self.get_serializer(data=request.data)
         serialized_user.is_valid(raise_exception=True)
         self.perform_create(serialized_user)
+        send_registration_mail(serialized_user.data)
         headers = self.get_success_headers(serialized_user.data)
         return Response(serialized_user.data, status=status.HTTP_201_CREATED, headers=headers)
 
