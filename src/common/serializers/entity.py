@@ -9,5 +9,5 @@ class EntitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Entity
         fields = (
-            'id'
+            'id',
         )

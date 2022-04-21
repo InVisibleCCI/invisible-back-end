@@ -9,11 +9,12 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-from pathlib import Path
-import environ
 import os
-from algoliasearch.search_client import SearchClient
+from datetime import timedelta
+from pathlib import Path
 
+import environ
+from algoliasearch.search_client import SearchClient
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +32,9 @@ SECRET_KEY = 'django-insecure-+bsh^v%)*_och*80q9yz+p(63v2$kdvrhc1*d#hibrl=ec47&t
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CORS_ORIGIN_ALLOW_ALL = True
 
+GEOCODE_APP_NAME = 'invisible_api'
 
 # Application definition
 
@@ -44,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'django_crontab',
+    'corsheaders',
+    'django.contrib.gis',
 
     'common',
     "core",
@@ -53,6 +58,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'core.User'
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -82,7 +88,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'invisible_backend.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -96,7 +101,6 @@ DATABASES = {
         'PORT': env.int('DATABASE_PORT', 3306)
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -124,7 +128,6 @@ CRONJOBS = [
     ('0 0,12 * * *', 'event.services.algolia_service.save_events_to_algolia', '>> /tmp/scheduled_job.log 2>&1')
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -136,7 +139,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
@@ -147,6 +149,13 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 ALGOLIA_CLIENT = SearchClient.create(env.str('ALGOLIA_APPLICATION_ID'), env.str('ALGOLIA_API_KEY'))
 ALGOLIA_INDEX = ALGOLIA_CLIENT.init_index(env.str('ALGOLIA_INDEX'))
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),
+}
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30)
+}

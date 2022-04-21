@@ -24,6 +24,8 @@ djangorestframework-simplejwt = "^5.0.0"
 gunicorn = "^20.1.0"
 algoliasearch = "^2.6.1"
 django-crontab = "^0.7.1"
+geopy = "^2.2.0"
+django-countries = "^7.3.2"
 
 [tool.poetry.dev-dependencies]
 pip = "^20.2.3"
