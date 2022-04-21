@@ -16,6 +16,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_merchant = models.BooleanField(default=False)
 
+    connection_attempt = models.IntegerField(default=0, verbose_name="Essais de connexion")
+
     objects = UserManager()
 
     USERNAME_FIELD = 'email'

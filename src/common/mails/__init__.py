@@ -14,3 +14,8 @@ def send_registration_mail(user):
     recipients = [user['email'],]
     return send(subject,recipients,msg_html)
 
+def send_reset_password_mail(user, subject, token):
+    msg_html = render_to_string('reset_password.html', {'name': user.first_name, 'token': token})
+    recipients = [user.email,]
+    return send(subject,recipients,msg_html)
+
