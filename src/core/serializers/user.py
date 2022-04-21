@@ -2,6 +2,7 @@ from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 
 from common.serializers.entity import EntitySerializer
+from common.serializers.multimedia import ImageSerializer
 from core.models import User
 
 
@@ -10,6 +11,7 @@ class UserRetrieveSerializer(EntitySerializer):
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     date_joined = serializers.DateTimeField()
+    avatar = ImageSerializer()
 
     class Meta:
         model = User
@@ -18,6 +20,7 @@ class UserRetrieveSerializer(EntitySerializer):
             'first_name',
             'last_name',
             'date_joined',
+            'avatar'
         )
 
 
