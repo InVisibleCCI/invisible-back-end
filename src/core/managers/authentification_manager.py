@@ -1,4 +1,6 @@
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils import timezone
+from secrets import token_urlsafe
+
 from rest_framework import exceptions
 
 from common.mails import send_reset_password_mail
@@ -10,10 +12,8 @@ class AuthenticationManager:
     Manage authentication that handles successive unsuccessful connection attempts
     """
     error_message = {
-        "disable_account" : "Le compte a été désactivé, veuillez consulter vos mails"
+        "disable_account": "Le compte a été désactivé, veuillez consulter vos mails"
     }
-
-
 
     def __init__(self, form_email):
         """
@@ -23,6 +23,15 @@ class AuthenticationManager:
             self.current_user = User.objects.get(email=form_email)
         except User.DoesNotExist:
             self.current_user = None
+
+    def reset_password(self, temporary_password):
+        self.current_user.set_password(temporary_password)
+        self.current_user.save()
+
+    def save_reset_password_token(self):
+        self.current_user.reset_password_token = token_urlsafe(16)
+        self.current_user.reset_password_token_end_validity_date = timezone.now() + timezone.timedelta(minutes=15)
+        self.current_user.save()
 
     def manage_user_bad_credentials(self):
         """
@@ -39,13 +48,18 @@ class AuthenticationManager:
                 self.error_message['disable_account']
             )
 
-        if self.current_user.connection_attempt >= 3 :
+        if self.current_user.connection_attempt >= 3:
             self.current_user.is_active = False
+
+            temporary_password = token_urlsafe(12)
+            self.reset_password(temporary_password)
+            self.save_reset_password_token()
             self.current_user.save()
-            token = PasswordResetTokenGenerator().make_token(self.current_user)
+
             send_reset_password_mail(self.current_user,
                                      "InVisible : Plusieurs tentatives infructueuses de connexion",
-                                     token)
+                                     temporary_password,
+                                     change_password=False)
             raise exceptions.AuthenticationFailed(
                 self.error_message['disable_account']
             )

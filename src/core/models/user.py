@@ -17,6 +17,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_merchant = models.BooleanField(default=False)
 
     connection_attempt = models.IntegerField(default=0, verbose_name="Essais de connexion")
+    reset_password_token = models.CharField(max_length=100, blank=True, null=True)
+    reset_password_token_end_validity_date = models.DateTimeField(blank=True, null=True)
 
     objects = UserManager()
 
