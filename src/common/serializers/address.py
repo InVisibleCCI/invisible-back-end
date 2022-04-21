@@ -8,6 +8,9 @@ class AddressSerializer(serializers.ModelSerializer):
     line2 = serializers.CharField()
     zipcode = serializers.IntegerField()
     city = serializers.CharField()
+    latitude = serializers.FloatField()
+    longitude = serializers.FloatField()
+
 
     class Meta:
         model = Address
@@ -15,5 +18,7 @@ class AddressSerializer(serializers.ModelSerializer):
             'line1',
             'line2',
             'zipcode',
-            'city'
+            'city',
+            'latitude',
+            'longitude'
         )
