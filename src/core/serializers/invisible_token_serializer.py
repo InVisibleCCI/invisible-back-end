@@ -13,7 +13,7 @@ class InvisibleTokenObtainSerializer(TokenObtainSerializer):
     username_field = get_user_model().USERNAME_FIELD
 
     default_error_messages = {
-        'no_active_account': _('No active account found with the given credentials')
+        'no_active_account': _("Aucun compte actif n'a été trouvé avec les informations d'identification données. ")
     }
 
     def __init__(self, *args, **kwargs):
@@ -37,6 +37,12 @@ class InvisibleTokenObtainSerializer(TokenObtainSerializer):
             pass
 
         self.user = authenticate(**authenticate_kwargs)
+
+        if self.user is None:
+            raise exceptions.AuthenticationFailed(
+                self.error_messages['no_active_account'],
+                'no_active_account',
+            )
 
         if not api_settings.USER_AUTHENTICATION_RULE(self.user):
             AuthenticationManager(attrs[self.username_field]).manage_user_bad_credentials()
