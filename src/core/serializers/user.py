@@ -4,6 +4,7 @@ from rest_framework import serializers
 from common.serializers.entity import EntitySerializer
 from common.serializers.multimedia import ImageSerializer
 from core.models import User
+from event.serializers.events import ListEventFavorites
 
 
 class UserRetrieveSerializer(EntitySerializer):
@@ -12,6 +13,7 @@ class UserRetrieveSerializer(EntitySerializer):
     last_name = serializers.CharField()
     date_joined = serializers.DateTimeField()
     avatar = ImageSerializer()
+    favorites = ListEventFavorites(many=True)
 
     class Meta:
         model = User
@@ -20,7 +22,8 @@ class UserRetrieveSerializer(EntitySerializer):
             'first_name',
             'last_name',
             'date_joined',
-            'avatar'
+            'avatar',
+            'favorites',
         )
 
 
