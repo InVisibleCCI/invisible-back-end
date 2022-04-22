@@ -1,5 +1,6 @@
 from rest_framework import mixins, viewsets
 
+from common.mails import send
 from event.models import Event
 from event.serializers.events import ListEventSerializer, RetrieveEventSerializer
 

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from common.serializers.address import AddressSerializer
 from common.serializers.entity import EntitySerializer
 from common.serializers.multimedia import ImageSerializer
 from event.models import Event
@@ -14,6 +15,7 @@ class ListEventSerializer(EntitySerializer):
     categories = CategorySerializer(many=True)
     accessibility_categories = AccessibilityCategorySerializer(many=True)
     images = ImageSerializer(many=True)
+    address = AddressSerializer()
 
     @classmethod
     def setup_for_serialization(cls, queryset):
@@ -29,7 +31,8 @@ class ListEventSerializer(EntitySerializer):
             'difficulty',
             'categories',
             'accessibility_categories',
-            'images'
+            'images',
+            'address'
         )
 
 class RetrieveEventSerializer(ListEventSerializer):
