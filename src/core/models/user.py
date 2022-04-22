@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 from django.db import models
 
 from core.managers.user_manager import UserManager
+from event.models import Event
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -20,6 +21,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     reset_password_token = models.CharField(max_length=100, blank=True, null=True)
     reset_password_token_end_validity_date = models.DateTimeField(blank=True, null=True)
 
+    favorites = models.ManyToManyField("event.Event")
     objects = UserManager()
 
     USERNAME_FIELD = 'email'

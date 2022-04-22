@@ -10,6 +10,8 @@ from rest_framework.response import Response
 from common.mails import send_registration_mail, send_reset_password_mail
 from core.models import User
 from core.serializers.user import UserCreateSerializer, EditUserSerializer, UserRetrieveSerializer
+from event.models import Event
+from event.serializers.events import ListEventSerializer
 
 
 class UserViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet ):
@@ -28,7 +30,7 @@ class UserViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.Gen
         user = User.objects.filter(email=email).first()
 
         if user:
-            return HttpResponse('This user already exists', status=status.HTTP_409_CONFLICT)
+            return HttpResponse("L'utilisateur existe déjà", status=status.HTTP_409_CONFLICT)
 
         serialized_user = self.get_serializer(data=request.data)
         serialized_user.is_valid(raise_exception=True)
@@ -41,6 +43,27 @@ class UserViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.Gen
     def get_me(self, request):
         user_serialized = UserRetrieveSerializer(request.user).data
         return Response(user_serialized,status=status.HTTP_200_OK)
+
+    @action(methods=['GET', 'POST', 'DELETE'], detail=False, url_path='favorites', permission_classes=[IsAuthenticated])
+    def manage_favorites(self, request):
+        if request.method == "GET":
+            events = Event.objects.filter(user=request.user)
+            return Response(ListEventSerializer(events, many=True).data, status=status.HTTP_200_OK)
+
+        event_id = request.data.get('eventId')
+        event = Event.objects.filter(id=event_id).first()
+
+        if event is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if request.method == "POST" :
+            request.user.favorites.add(event)
+            return Response(status=status.HTTP_201_CREATED)
+
+        if request.method == "DELETE":
+            request.user.favorites.remove(event)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
 
     @action(methods=['POST'], detail=False, url_path='send-reset-password-mail')
     def post_send_reset_password_mail(self, request):
@@ -97,3 +120,6 @@ class UserViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.Gen
         user.set_password(new_password)
         user.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+

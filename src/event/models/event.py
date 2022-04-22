@@ -1,6 +1,6 @@
 from django.db import models
 
-from common.models import Entity, Image
+from common.models import Entity
 from event.models.category import Category, AccessibilityCategory
 
 
@@ -16,7 +16,7 @@ class Event(Entity):
     accessibility_categories = models.ManyToManyField(AccessibilityCategory,
                                                       related_name="event",
                                                       verbose_name="Catégorie d'accessibilité")
-    images = models.ManyToManyField(Image, related_name="event")
+    images = models.ManyToManyField("common.Image", related_name="event")
     address = models.ForeignKey('common.Address', on_delete=models.CASCADE, verbose_name="Adresse de l'événement")
     difficulty = models.IntegerField(choices=EventDifficultyChoices.choices,
                                      null=True,

@@ -5,7 +5,6 @@ from core.views.user import UserViewSet
 
 router = routers.DefaultRouter()
 
-
 router.register('users', UserViewSet)
 
 urlpatterns = [
