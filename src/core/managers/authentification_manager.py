@@ -39,7 +39,8 @@ class AuthenticationManager:
         we disable the current user and send an email to change the password
         """
         if self.current_user is None:
-            pass
+            return
+        
         self.current_user.connection_attempt += 1
         self.current_user.save()
 

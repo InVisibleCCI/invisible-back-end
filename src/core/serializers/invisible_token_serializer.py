@@ -38,12 +38,6 @@ class InvisibleTokenObtainSerializer(TokenObtainSerializer):
 
         self.user = authenticate(**authenticate_kwargs)
 
-        if self.user is None:
-            raise exceptions.AuthenticationFailed(
-                self.error_messages['no_active_account'],
-                'no_active_account',
-            )
-
         if not api_settings.USER_AUTHENTICATION_RULE(self.user):
             AuthenticationManager(attrs[self.username_field]).manage_user_bad_credentials()
             raise exceptions.AuthenticationFailed(
