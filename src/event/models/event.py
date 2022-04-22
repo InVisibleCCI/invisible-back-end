@@ -23,6 +23,7 @@ class Event(Entity):
                                      blank=True,
                                      verbose_name='Difficulté')
     merchant = models.ForeignKey('merchant.Merchant', on_delete=models.PROTECT, null=True)
+    is_exclusive = models.BooleanField(verbose_name="Expérience exclusive",default=False)
 
     class Meta:
         app_label = "event"

@@ -2,7 +2,7 @@ FROM python:3.10-slim
 
 ENV PYTHONUNBUFFERED=1
 
-RUN         apt-get update && apt-get install -y gcc libmariadb-dev gdal-bin cron
+RUN         apt-get update && apt-get install -y gcc libmariadb-dev gdal-bin cron libpq-dev
 
 RUN         mkdir /code && mkdir /poetry
 ADD         ./poetry/pyproject.toml    /pyproject.toml
