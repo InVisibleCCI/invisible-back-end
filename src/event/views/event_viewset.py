@@ -1,11 +1,13 @@
 from django.contrib.gis.db.models.functions import GeometryDistance
 from django.contrib.gis.geos import Point
+from django.db.models import Count, Case, When, IntegerField
 from rest_framework.response import Response
 from rest_framework import mixins, viewsets, status
 
 from common.mails import send
 from event.models import Event
 from event.serializers.events import ListEventSerializer, RetrieveEventSerializer
+from merchant.models.navigation_tracker import NavigationChoices
 
 
 class EventViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -25,9 +27,10 @@ class EventViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.Ge
     def list(self, request, *args, **kwargs):
         if request.GET.get('page') == "homepage":
             result = {
-                "near_location": dict(),
-                "user_favorites": dict(),
-                "exclusives" : dict()
+                "near_location": [],
+                "user_favorites": [],
+                "exclusives" : [],
+                "most_visited": [],
             }
             latitude = request.GET.get('latitude')
             longitude = request.GET.get('longitude')
@@ -35,12 +38,20 @@ class EventViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.Ge
             if latitude and longitude:
                 ref_location = Point(float(longitude), float(latitude), srid=4326)
                 near_location = Event.objects.all().order_by(GeometryDistance("address__location", ref_location))[:4]
+                near_location = ListEventSerializer.setup_for_serialization(near_location)
                 result['near_location'] = ListEventSerializer(near_location, many=True).data
 
-            if request.user :
-                result['user_favorites'] = ListEventSerializer(Event.objects.filter(user=request.user), many=True).data
+            if not request.user.is_anonymous :
+                user_favorites = ListEventSerializer.setup_for_serialization(Event.objects.filter(user=request.user))
+                result['user_favorites'] = ListEventSerializer(user_favorites, many=True).data
 
-            result['exclusives'] = ListEventSerializer(Event.objects.filter(is_exclusive=True), many=True).data
+
+            exclusive = RetrieveEventSerializer.setup_for_serialization(Event.objects.filter(is_exclusive=True))
+            result['exclusives'] = RetrieveEventSerializer(exclusive, many=True).data
+
+            most_visited= Event.objects.all().annotate(count_trackers=Count('navigations_trackers_event')).order_by('-count_trackers')[:4]
+            most_visited = RetrieveEventSerializer.setup_for_serialization(most_visited)
+            result['most_visited'] = RetrieveEventSerializer(most_visited, many=True).data
 
             return Response(result, status=status.HTTP_200_OK)
 
