@@ -2,16 +2,16 @@ version: '3.3'
 
 services:
   db:
-    image: mariadb
+    image: postgis/postgis:12-2.5-alpine
     environment:
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD : 'password'
-      MYSQL_DATABASE: 'invisible-db'
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'password'
+      POSTGRES_DB: 'invisible-db'
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - db-persistance:/var/lib/mysql
+      - db-persistance:/var/lib/postgresql/data
 
   db_admin:
     image: adminer:latest

@@ -93,12 +93,12 @@ WSGI_APPLICATION = 'invisible_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': env.str('DATABASE_NAME', 'invisible-db'),
-        'USER': env.str('DATABASE_USER', 'user'),
+        'USER': env.str('DATABASE_USER', 'postgres'),
         'PASSWORD': env.str('DATABASE_PASSWORD', 'password'),
         'HOST': env.str('DATABASE_HOST', 'db'),
-        'PORT': env.int('DATABASE_PORT', 3306)
+        'PORT': env.int('DATABASE_PORT', 5432)
     }
 }
 

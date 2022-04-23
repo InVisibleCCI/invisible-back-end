@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 from django.db import models
 
 from core.managers.user_manager import UserManager
+from event.models import Event
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -12,7 +13,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=30, blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
-    avatar = models.ForeignKey('common.Image', null=True, on_delete=models.PROTECT)
+    avatar = models.ForeignKey('common.Image', null=True, on_delete=models.PROTECT, blank=True)
     is_staff = models.BooleanField(default=False)
     is_merchant = models.BooleanField(default=False)
 
@@ -20,6 +21,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     reset_password_token = models.CharField(max_length=100, blank=True, null=True)
     reset_password_token_end_validity_date = models.DateTimeField(blank=True, null=True)
 
+    favorites = models.ManyToManyField("event.Event")
     objects = UserManager()
 
     USERNAME_FIELD = 'email'

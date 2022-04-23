@@ -49,3 +49,12 @@ class RetrieveEventSerializer(ListEventSerializer):
         fields = ListEventSerializer.Meta.fields + (
             'merchant',
         )
+
+class ListEventFavorites(serializers.ModelSerializer):
+    id = serializers.UUIDField
+
+    class Meta:
+        model = Event
+        fields = (
+            'id',
+        )
