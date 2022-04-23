@@ -37,6 +37,7 @@ class ListEventSerializer(EntitySerializer):
 
 class RetrieveEventSerializer(ListEventSerializer):
     merchant = MerchantEventSerializer()
+    description = serializers.CharField()
 
     @classmethod
     def setup_for_serialization(cls, queryset):
@@ -48,6 +49,7 @@ class RetrieveEventSerializer(ListEventSerializer):
         model = Event
         fields = ListEventSerializer.Meta.fields + (
             'merchant',
+            'description'
         )
 
 class ListEventFavorites(serializers.ModelSerializer):
