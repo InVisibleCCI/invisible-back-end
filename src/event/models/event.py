@@ -1,6 +1,8 @@
 from django.db import models
+from django.db.models import Manager
 
 from common.models import Entity
+from common.views.deleted_manager import NotDeletedManager
 from event.models.category import Category, AccessibilityCategory
 
 
@@ -24,6 +26,9 @@ class Event(Entity):
                                      verbose_name='Difficulté')
     merchant = models.ForeignKey('merchant.Merchant', on_delete=models.PROTECT, null=True)
     is_exclusive = models.BooleanField(verbose_name="Expérience exclusive",default=False)
+
+    objects = Manager()
+    not_deleted_objects = NotDeletedManager()
 
     class Meta:
         app_label = "event"

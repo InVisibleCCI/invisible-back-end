@@ -1,7 +1,9 @@
 from django.contrib.auth.models import Group
 from django.db import models
+from django.db.models import Manager
 
 from common.models import Entity
+from common.views.deleted_manager import NotDeletedManager
 from core.models import User
 
 
@@ -16,6 +18,9 @@ class Merchant(Entity):
     email = models.EmailField(verbose_name="Adresse Email du marchant", null=True, blank=True)
     description = models.TextField(verbose_name="Description du commerçant", null=True, blank=True)
     user = models.ForeignKey(User, related_name='merchant', on_delete=models.CASCADE)
+
+    objects = Manager()
+    not_deleted_objects = NotDeletedManager()
 
     class Meta:
         app_label = "merchant"

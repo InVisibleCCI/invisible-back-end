@@ -1,6 +1,8 @@
 from django.db import models
+from django.db.models import Manager
 
 from common.models.entity import Entity
+from common.views.deleted_manager import NotDeletedManager
 from core.models import User
 
 
@@ -24,6 +26,9 @@ class Image(Multimedia):
 
     type = models.IntegerField(choices=ImageTypeChoices.choices)
     order = models.IntegerField(default=0, null=True, blank=True)
+
+    objects = Manager()
+    not_deleted_objects = NotDeletedManager()
 
     class Meta:
         app_label = "common"
