@@ -47,7 +47,7 @@ class RetrieveEventSerializer(ListEventSerializer):
     @classmethod
     def setup_for_serialization(cls, queryset):
         return ListEventSerializer.setup_for_serialization(queryset).prefetch_related(
-            'merchant', 'merchant__address', 'reviews',
+            'merchant', 'merchant__address', 'reviews__user',
         )
 
     class Meta:

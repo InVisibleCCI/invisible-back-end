@@ -1,11 +1,14 @@
 from rest_framework import serializers
 
 from common.serializers.entity import EntitySerializer
+from common.serializers.multimedia import ImageSerializer
 from core.models import User
 from event.models import Event
 from event.models.review import Review
 
-class UserPublicSerializer:
+class UserPublicSerializer(serializers.ModelSerializer):
+    public_name = serializers.CharField()
+    avatar = ImageSerializer()
 
     class Meta:
         model = User
