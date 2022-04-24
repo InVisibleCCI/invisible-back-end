@@ -37,18 +37,18 @@ class EventViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, PaginationM
 
             if latitude and longitude:
                 ref_location = Point(float(longitude), float(latitude), srid=4326)
-                near_location = Event.not_deleted_objects.order_by(GeometryDistance("address__location", ref_location))[:4]
+                near_location = Event.objects_with_mark.order_by(GeometryDistance("address__location", ref_location))[:4]
                 near_location = ListEventSerializer.setup_for_serialization(near_location)
                 result['near_location'] = ListEventSerializer(near_location, many=True).data
 
             if not request.user.is_anonymous:
-                user_favorites = ListEventSerializer.setup_for_serialization(Event.not_deleted_objects.filter(user=request.user))
+                user_favorites = ListEventSerializer.setup_for_serialization(Event.objects_with_mark.filter(user=request.user))
                 result['user_favorites'] = ListEventSerializer(user_favorites, many=True).data
 
-            exclusive = RetrieveEventSerializer.setup_for_serialization(Event.not_deleted_objects.filter(is_exclusive=True))
+            exclusive = RetrieveEventSerializer.setup_for_serialization(Event.objects_with_mark.filter(is_exclusive=True))
             result['exclusives'] = RetrieveEventSerializer(exclusive, many=True).data
 
-            most_visited = Event.not_deleted_objects.annotate(count_trackers=Count('navigations_trackers_event')).order_by(
+            most_visited = Event.objects_with_mark.annotate(count_trackers=Count('navigations_trackers_event')).order_by(
                 '-count_trackers')[:4]
             most_visited = RetrieveEventSerializer.setup_for_serialization(most_visited)
             result['most_visited'] = RetrieveEventSerializer(most_visited, many=True).data

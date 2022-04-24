@@ -9,12 +9,15 @@ from event.models.category import Category, AccessibilityCategory
 """
 Calculate in DB the average mark of reviews and their count 
 """
+
+
 class EventManager(models.Manager):
     def get_queryset(self):
         return Event.not_deleted_objects.get_queryset().annotate(
             average_mark=Coalesce(Avg('reviews__mark'), 0, output_field=FloatField()),
             reviews_count=Count('reviews'),
         )
+
 
 class Event(Entity):
     class EventDifficultyChoices(models.IntegerChoices):
@@ -35,7 +38,20 @@ class Event(Entity):
                                      blank=True,
                                      verbose_name='Difficulté')
     merchant = models.ForeignKey('merchant.Merchant', on_delete=models.PROTECT, null=True)
-    is_exclusive = models.BooleanField(verbose_name="Expérience exclusive",default=False)
+    is_exclusive = models.BooleanField(verbose_name="Expérience exclusive", default=False)
+
+    class CardColorChoices(models.TextChoices):
+        pink = '#FF7E7E', "Rose"
+        flirt = '#A02074', "Flirt"
+        magenta = '#CF0063', "Magenta"
+        blue = '#2F789D', "Blue"
+        lightBlue = '#06C7F2', "Bleu clair"
+        darkBlue = '#5B53AE', "Bleu foncé"
+        purple = '#7F20A0', "Violet"
+        green = '#20A091', "Vert"
+        orange = '#EF9935', "Orange"
+
+    card_color = models.TextField(choices=CardColorChoices.choices, default=CardColorChoices.pink)
 
     objects = Manager()
     objects_with_mark = EventManager()
@@ -47,7 +63,6 @@ class Event(Entity):
 
     def __str__(self):
         return self.name
-
 
     @property
     def short_description(self):

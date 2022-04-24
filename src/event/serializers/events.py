@@ -18,6 +18,7 @@ class ListEventSerializer(EntitySerializer):
     images = ImageSerializer(many=True)
     address = AddressSerializer()
     average_mark = serializers.FloatField()
+    card_color = serializers.CharField()
 
     @classmethod
     def setup_for_serialization(cls, queryset):
@@ -35,8 +36,10 @@ class ListEventSerializer(EntitySerializer):
             'accessibility_categories',
             'images',
             'address',
-            'average_mark'
+            'average_mark',
+            'card_color'
         )
+
 
 class RetrieveEventSerializer(ListEventSerializer):
     merchant = MerchantEventSerializer()
@@ -58,6 +61,7 @@ class RetrieveEventSerializer(ListEventSerializer):
             'reviews',
             'reviews_count',
         )
+
 
 class ListEventFavorites(serializers.ModelSerializer):
     id = serializers.UUIDField
