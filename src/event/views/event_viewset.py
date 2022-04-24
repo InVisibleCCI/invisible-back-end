@@ -11,7 +11,7 @@ from event.serializers.events import ListEventSerializer, RetrieveEventSerialize
 
 
 class EventViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, PaginationMixin, viewsets.GenericViewSet):
-    queryset = Event.not_deleted_objects
+    queryset = Event.objects_with_mark
     pagination_class = OnStaminaLimitOffsetPagination
 
     def get_serializer_class(self):
