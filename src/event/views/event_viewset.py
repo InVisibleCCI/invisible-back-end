@@ -45,7 +45,7 @@ class EventViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, PaginationM
                 user_favorites = ListEventSerializer.setup_for_serialization(Event.not_deleted_objects.filter(user=request.user))
                 result['user_favorites'] = ListEventSerializer(user_favorites, many=True).data
 
-            exclusive = RetrieveEventSerializer.setup_for_serialization(Event.not_deleted_objects(is_exclusive=True))
+            exclusive = RetrieveEventSerializer.setup_for_serialization(Event.not_deleted_objects.filter(is_exclusive=True))
             result['exclusives'] = RetrieveEventSerializer(exclusive, many=True).data
 
             most_visited = Event.not_deleted_objects.annotate(count_trackers=Count('navigations_trackers_event')).order_by(

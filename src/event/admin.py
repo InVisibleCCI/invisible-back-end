@@ -25,6 +25,11 @@ class EventAdmin(admin.ModelAdmin):
 
         return super(EventAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if request.user.is_merchant and db_field.name == "is_exclusive":
+            return
+        return super(EventAdmin, self).formfield_for_dbfield(db_field, request, **kwargs)
+
     def get_queryset(self, request):
         queryset = super(EventAdmin, self).get_queryset(request)
         if request.user.is_merchant:
