@@ -31,6 +31,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = "Utilisatateur"
         verbose_name_plural = "Utilisateurs"
 
+    @property
+    def public_name(self):
+        '''
+        Returns the first name and the first letter of the last name
+        '''
+        public_name = self.first_name.capitalize() + " " + self.last_name[0].upper() + "."
+        return public_name
+
     def get_full_name(self):
         '''
         Returns the first_name plus the last_name, with a space in between.
