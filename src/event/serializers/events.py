@@ -42,6 +42,7 @@ class RetrieveEventSerializer(ListEventSerializer):
     merchant = MerchantEventSerializer()
     description = serializers.CharField()
     reviews = ReviewsEventSerializer(many=True)
+    reviews_count = serializers.IntegerField()
 
     @classmethod
     def setup_for_serialization(cls, queryset):
@@ -55,6 +56,7 @@ class RetrieveEventSerializer(ListEventSerializer):
             'merchant',
             'description',
             'reviews',
+            'reviews_count',
         )
 
 class ListEventFavorites(serializers.ModelSerializer):
