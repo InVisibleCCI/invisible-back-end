@@ -16,9 +16,15 @@ class MerchantEventSerializer(EntitySerializer) :
     email = serializers.EmailField()
     address = AddressSerializer()
 
+    @classmethod
+    def setup_for_serialization(cls, queryset):
+        return queryset.prefetch_related(
+            'address'
+        )
+
     class Meta:
         model = Merchant
-        fields = (
+        fields = EntitySerializer.Meta.fields + (
             'name',
             'logo',
             'phone_number',
@@ -28,3 +34,8 @@ class MerchantEventSerializer(EntitySerializer) :
             'email',
             'address'
         )
+
+
+
+
+
