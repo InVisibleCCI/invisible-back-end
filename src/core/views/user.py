@@ -41,7 +41,7 @@ class UserViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.Gen
         return Response(serialized_user.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):
-        avatar_url = request.data.get('avatar_url', None)
+        avatar_url = request.data.pop('avatar_url', None)
         if avatar_url:
             new_avatar = Image.objects.create(
                 type=4,
@@ -51,7 +51,6 @@ class UserViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.Gen
             new_avatar.save()
             request.user.avatar = new_avatar
             request.user.save()
-            return Response(status=status.HTTP_200_OK)
 
         return super(UserViewSet, self).update(request, *args,**kwargs)
 
