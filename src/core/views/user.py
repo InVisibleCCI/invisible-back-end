@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from common.mails import send_registration_mail, send_reset_password_mail
+from common.models import Image
 from core.models import User
 from core.serializers.user import UserCreateSerializer, EditUserSerializer, UserRetrieveSerializer
 from event.models import Event
@@ -39,16 +40,35 @@ class UserViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.Gen
         headers = self.get_success_headers(serialized_user.data)
         return Response(serialized_user.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    def update(self, request, *args, **kwargs):
+        avatar_url = request.data.get('avatar_url', None)
+        if avatar_url:
+            new_avatar = Image.objects.create(
+                type=4,
+                alt_text="avatar de l'utilisateur",
+                src=avatar_url
+            )
+            new_avatar.save()
+            request.user.avatar = new_avatar
+            request.user.save()
+            return Response(status=status.HTTP_200_OK)
+
+        return super(UserViewSet, self).update(request, *args,**kwargs)
+
     @action(methods=['GET'], detail=False, url_path='me', permission_classes=[IsAuthenticated])
     def get_me(self, request):
         user_serialized = UserRetrieveSerializer(request.user).data
         return Response(user_serialized,status=status.HTTP_200_OK)
 
+
+
     @action(methods=['GET', 'POST', 'DELETE'], detail=False, url_path='favorites', permission_classes=[IsAuthenticated])
     def manage_favorites(self, request):
         if request.method == "GET":
-            events = Event.objects.filter(user=request.user)
-            return Response(ListEventSerializer(events, many=True).data, status=status.HTTP_200_OK)
+            events = Event.objects_with_mark.filter(user=request.user)
+            events = ListEventSerializer.setup_for_serialization(events)
+            events = ListEventSerializer(events, many=True).data
+            return Response(events, status=status.HTTP_200_OK)
 
         event_id = request.data.get('eventId')
         event = Event.objects.filter(id=event_id).first()
