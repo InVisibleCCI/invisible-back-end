@@ -17,6 +17,8 @@ import environ
 from algoliasearch.search_client import SearchClient
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from corsheaders.defaults import default_headers
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 env_variable = os.environ.get('PYTHON_ENVIRONMENT', 'prod').lower()
@@ -33,7 +35,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
-
+CORS_ALLOW_HEADERS = list(default_headers) + ["LATITUDE", "LONGITUDE"]
 GEOCODE_APP_NAME = 'invisible_api'
 
 # Application definition
