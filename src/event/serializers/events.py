@@ -19,6 +19,14 @@ class ListEventSerializer(EntitySerializer):
     address = AddressSerializer()
     average_mark = serializers.FloatField()
     card_color = serializers.CharField()
+    distance = serializers.SerializerMethodField()
+    description = serializers.CharField()
+
+    def get_distance(self,obj):
+        distance = getattr(obj, 'distance', None)
+        if distance is None:
+            return None
+        return distance.km
 
     @classmethod
     def setup_for_serialization(cls, queryset):
@@ -37,7 +45,9 @@ class ListEventSerializer(EntitySerializer):
             'images',
             'address',
             'average_mark',
-            'card_color'
+            'card_color',
+            'distance',
+            'description'
         )
 
 

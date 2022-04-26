@@ -1,3 +1,4 @@
+from django.contrib.gis.db.models.functions import Distance, GeometryDistance
 from django.db import models
 from django.db.models import Manager, Avg, Count, FloatField
 from django.db.models.functions import Coalesce
@@ -5,12 +6,9 @@ from django.db.models.functions import Coalesce
 from common.models import Entity
 from common.views.deleted_manager import NotDeletedManager
 from event.models.category import Category, AccessibilityCategory
-
 """
 Calculate in DB the average mark of reviews and their count 
 """
-
-
 class EventManager(models.Manager):
     def get_queryset(self):
         return Event.not_deleted_objects.get_queryset().annotate(
@@ -64,6 +62,25 @@ class Event(Entity):
     def __str__(self):
         return self.name
 
-    @property
-    def short_description(self):
-        return "..."
+    @classmethod
+    def annotate_distance(cls, queryset, location):
+        return queryset.annotate(
+            distance=Distance('address__location', location)
+        )
+
+    @classmethod
+    def get_near_location(cls, ref_location, queryset):
+        return queryset.order_by(GeometryDistance("address__location", ref_location))[:4]
+
+    @classmethod
+    def get_favorites(cls, user, queryset):
+        return queryset.filter(user=user)
+
+    @classmethod
+    def get_most_visited(cls, queryset):
+        return queryset.annotate(count_trackers=Count('navigations_trackers_event')).order_by(
+            '-count_trackers')[:4]
+
+    @classmethod
+    def get_exclusives(cls, queryset):
+        return queryset.filter(is_exclusive=True)

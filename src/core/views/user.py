@@ -1,3 +1,4 @@
+from django.contrib.gis.geos import Point
 from django.utils import timezone
 from secrets import token_urlsafe
 
@@ -63,8 +64,16 @@ class UserViewSet(mixins.CreateModelMixin, mixins.UpdateModelMixin, viewsets.Gen
 
     @action(methods=['GET', 'POST', 'DELETE'], detail=False, url_path='favorites', permission_classes=[IsAuthenticated])
     def manage_favorites(self, request):
+        latitude = self.request.META.get('HTTP_LATITUDE')
+        longitude = self.request.META.get('HTTP_LONGITUDE')
+
+
         if request.method == "GET":
             events = Event.objects_with_mark.filter(user=request.user)
+            if latitude and longitude:
+                ref_location = Point(float(longitude), float(latitude), srid=4326)
+                events = Event.annotate_distance(events, ref_location)
+
             events = ListEventSerializer.setup_for_serialization(events)
             events = ListEventSerializer(events, many=True).data
             return Response(events, status=status.HTTP_200_OK)
