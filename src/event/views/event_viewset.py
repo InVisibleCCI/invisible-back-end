@@ -20,7 +20,6 @@ class EventViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, PaginationM
         return serializer_class
 
     def get_queryset(self):
-        test = self.request.META
         latitude = self.request.META.get('HTTP_LATITUDE')
         longitude = self.request.META.get('HTTP_LONGITUDE')
 

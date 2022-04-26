@@ -38,11 +38,13 @@ class MerchantEventSerializer(EntitySerializer) :
 
 class MerchantRetrieveSerializer(MerchantEventSerializer):
     regular_openings = OpeningSerializer(many=True)
+    description = serializers.CharField()
 
     class Meta:
         model= Merchant
         fields = MerchantEventSerializer.Meta.fields + (
             'regular_openings',
+            'description',
         )
 
 

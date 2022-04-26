@@ -21,5 +21,10 @@ class RegularOpening(Entity):
     objects = Manager()
     not_deleted_objects = NotDeletedManager()
 
+    class Meta:
+        app_label = "merchant"
+        verbose_name = "Horaires d'ouverture"
+
+
     def __str__(self):
         return '{} de {} à {}'.format(DAYS[self.day - 1], self.start_at, self.end_at)
