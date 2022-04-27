@@ -28,12 +28,12 @@ environ.Env.read_env(env_file=f'{BASE_DIR}/invisible_backend/environments/.env_{
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+bsh^v%)*_och*80q9yz+p(63v2$kdvrhc1*d#hibrl=ec47&t'
+SECRET_KEY = env.str('SECRET_KEY', 'invisible-db')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['in-visible.ovh']
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_HEADERS = list(default_headers) + ["LATITUDE", "LONGITUDE"]
 GEOCODE_APP_NAME = 'invisible_api'
