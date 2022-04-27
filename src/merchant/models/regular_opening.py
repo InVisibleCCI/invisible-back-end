@@ -24,6 +24,7 @@ class RegularOpening(Entity):
     class Meta:
         app_label = "merchant"
         verbose_name = "Horaires d'ouverture"
+        ordering = ['start_at', 'day']
 
 
     def __str__(self):
