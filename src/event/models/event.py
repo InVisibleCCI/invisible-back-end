@@ -35,7 +35,7 @@ class Event(Entity):
                                      null=True,
                                      blank=True,
                                      verbose_name='Difficulté')
-    merchant = models.ForeignKey('merchant.Merchant', on_delete=models.PROTECT, null=True)
+    merchant = models.ForeignKey('merchant.Merchant', on_delete=models.PROTECT, null=True, related_name="events")
     is_exclusive = models.BooleanField(verbose_name="Expérience exclusive", default=False)
 
     class CardColorChoices(models.TextChoices):

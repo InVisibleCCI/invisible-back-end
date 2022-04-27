@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from common.serializers.multimedia import ImageSerializer
 from merchant.models import Merchant
+from merchant.serializers.regular_opening import OpeningSerializer
 
 
 class MerchantEventSerializer(EntitySerializer) :
@@ -16,9 +17,15 @@ class MerchantEventSerializer(EntitySerializer) :
     email = serializers.EmailField()
     address = AddressSerializer()
 
+    @classmethod
+    def setup_for_serialization(cls, queryset):
+        return queryset.prefetch_related(
+            'address',
+        )
+
     class Meta:
         model = Merchant
-        fields = (
+        fields = EntitySerializer.Meta.fields + (
             'name',
             'logo',
             'phone_number',
@@ -26,5 +33,22 @@ class MerchantEventSerializer(EntitySerializer) :
             'instagram_url',
             'twitter_url',
             'email',
-            'address'
+            'address',
         )
+
+class MerchantRetrieveSerializer(MerchantEventSerializer):
+    regular_openings = OpeningSerializer(many=True)
+    description = serializers.CharField()
+
+    class Meta:
+        model= Merchant
+        fields = MerchantEventSerializer.Meta.fields + (
+            'regular_openings',
+            'description',
+        )
+
+
+
+
+
+
